@@ -1,0 +1,8 @@
+name = "Sean"
+string = " Hello " <> name
+list = ([1, 2] ++ [3, 4]) -- [1,3]
+tuple = {3.14, :pie, "Apple"}
+keywordlist = [{:foo, "bar"}, {:hello, "world"}]
+map = %{:foo => "bar", "hello" => :world}
+map2 = %{map | foo: "baz"}
+IO.puts :stderr, map2.foo
