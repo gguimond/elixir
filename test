@@ -33,7 +33,7 @@ greet = fn
    (greeting, name) -> "#{greeting}, #{name}"
 end
 IO.puts greet.("Hello", "Sean")
-IO.puts greet.("Mornin'", "Sean")
+IO.puts greet.("Mornin", "Sean")
 
 if String.valid?("Hello") do
 	IO.puts "ok"
@@ -61,4 +61,46 @@ user = %{first: "doomspork", last: "Callan"}
  with {:ok, first} <- Map.fetch(user, :first),
     {:ok, last} <- Map.fetch(user, :last),
     do: IO.puts last <> ", " <> first
+
+sum = &(&1 + &2)
+IO.puts Integer.to_string sum.(2,3)
+
+defmodule Greeter do
+  def hello(name) do
+    "Hello, " <> name
+  end
+end
+
+IO.puts Greeter.hello("Sean")
+
+defmodule Length do
+  def of([]), do: 0
+  def of([_ | tail]), do: 1 + of(tail)
+end
+
+IO.puts Length.of [1, 2, 3]
+
+defmodule Greeter2 do
+  def hello(name), do: phrase() <> name
+  defp phrase, do: "Hello, "
+end
+
+IO.puts Greeter2.hello("Sean")
+
+defmodule Greeter3 do
+  def hello(names) when is_list(names) do
+    names
+    |> Enum.join(", ")
+    |> hello
+  end
+
+  def hello(name \\ "default") when is_binary(name) do
+    phrase() <> name
+  end
+
+  defp phrase, do: "Hello, "
+end
+
+IO.puts Greeter3.hello ["Sean", "Steve"]
+IO.puts Greeter3.hello
 
