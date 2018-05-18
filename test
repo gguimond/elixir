@@ -88,13 +88,14 @@ end
 IO.puts Greeter2.hello("Sean")
 
 defmodule Greeter3 do
+	def hello(name \\ "default")
   def hello(names) when is_list(names) do
     names
     |> Enum.join(", ")
     |> hello
   end
 
-  def hello(name \\ "default") when is_binary(name) do
+  def hello(name ) when is_binary(name) do
     phrase() <> name
   end
 
@@ -103,4 +104,40 @@ end
 
 IO.puts Greeter3.hello ["Sean", "Steve"]
 IO.puts Greeter3.hello
+
+IO.puts "Elixir rocks" |> String.upcase() |> String.split()
+
+defmodule Example do
+  @greeting "Hello"
+
+  def greeting(name) do
+    ~s(#{@greeting} #{name}.)
+  end
+end
+
+defmodule Example2.User do
+  defstruct name: "Sean", roles: []
+end
+
+defmodule HelloMacro do
+  defmacro __using__(opts) do
+  greeting = Keyword.get(opts, :greeting, "Hi")
+    quote do
+      def helloMac(name), do: unquote(greeting) <> ", " <> name
+    end
+  end
+end
+
+import List, only: [last: 1]
+defmodule Main do
+	use HelloMacro, greeting: "Hola"
+  def main do
+    user = %Example2.User{name: "Steve", roles: [:admin, :owner]}
+    sean = %{user | name: "Sean"}
+    IO.puts sean.name
+    IO.puts last(["one","two"])
+    IO.puts helloMac("toto")
+  end
+end
+Main.main
 
