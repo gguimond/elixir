@@ -5,4 +5,21 @@ tuple = {3.14, :pie, "Apple"}
 keywordlist = [{:foo, "bar"}, {:hello, "world"}]
 map = %{:foo => "bar", "hello" => :world}
 map2 = %{map | foo: "baz"}
-IO.puts :stderr, map2.foo
+
+
+#Enum.__info__(:functions) |> Enum.each(fn({function, arity}) ->
+#IO.puts "#{function}/#{arity}"
+#end)
+
+
+
+IO.puts Enum.all?(["foo", "bar", "hello"], fn(s) -> String.length(s) == 3 end)
+
+IO.puts Enum.chunk_by(["one", "two", "three", "four", "five"], fn(x) -> String.length(x) end)
+
+IO.puts Enum.map([0, 1, 2, 3], fn(x) -> Integer.to_string(x - 1) end)
+
+IO.puts Enum.filter([1, 2, 3, 4], fn(x) -> rem(x, 2) == 0 end)
+
+IO.puts Enum.reduce(["a","b","c"], "1", fn(x,acc)-> x <> acc end)
+
