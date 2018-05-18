@@ -35,3 +35,30 @@ end
 IO.puts greet.("Hello", "Sean")
 IO.puts greet.("Mornin'", "Sean")
 
+if String.valid?("Hello") do
+	IO.puts "ok"
+else
+	IO.puts "ko"
+end
+
+unless is_integer("hello") do
+	IO.puts "not int"
+end
+
+
+case {:ok, "Hello World"} do
+   {:ok, result} -> IO.puts result
+   {:error} -> IO.puts "Uh oh!"
+   _ -> IO.puts "Catch all"
+ end
+
+cond do
+   7 + 1 == 0 -> IO.puts "Incorrect"
+   true -> IO.puts "Catch all"
+end
+
+user = %{first: "doomspork", last: "Callan"}
+ with {:ok, first} <- Map.fetch(user, :first),
+    {:ok, last} <- Map.fetch(user, :last),
+    do: IO.puts last <> ", " <> first
+
