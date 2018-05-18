@@ -23,3 +23,15 @@ IO.puts Enum.filter([1, 2, 3, 4], fn(x) -> rem(x, 2) == 0 end)
 
 IO.puts Enum.reduce(["a","b","c"], "1", fn(x,acc)-> x <> acc end)
 
+list = [1, 2, 3, "test"]
+[1, 2, 3 | tail] = list
+IO.puts tail
+
+greeting = "Hello"
+greet = fn
+   (^greeting, name) -> "Hi #{name}"
+   (greeting, name) -> "#{greeting}, #{name}"
+end
+IO.puts greet.("Hello", "Sean")
+IO.puts greet.("Mornin'", "Sean")
+
