@@ -137,7 +137,7 @@ defmodule Main do
 	@moduledoc """
   	Provides a main function
   	"""
-  	
+
 	use HelloMacro, greeting: "Hola"
 	import MySigils
 	@doc """
@@ -169,3 +169,17 @@ IO.puts Regex.split(~r/_/, string)
 IO.puts NaiveDateTime.from_iso8601("2015-01-23 23:50:07") == {:ok, ~N[2015-01-23 23:50:07]}
 
 
+
+list = [1, 2, 3, 4, 5]
+for x <- list, do: IO.puts x*x
+
+for {k, v} <- %{"a" => "A", "b" => "B"}, do: IO.puts k
+
+for n <- list, times <- 1..n do
+	IO.puts String.duplicate("*", times)
+end
+
+import Integer
+for x <- 1..10, is_even(x), do: IO.puts x
+
+for {k, v} <- [one: 1, two: 2, three: 3], into: %{}, do: {k, v}
