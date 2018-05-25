@@ -134,8 +134,23 @@ defmodule MySigils do
 
 import List, only: [last: 1]
 defmodule Main do
+	@moduledoc """
+  	Provides a main function
+  	"""
+  	
 	use HelloMacro, greeting: "Hola"
 	import MySigils
+	@doc """
+	  Main function
+
+	  ## Parameters
+
+	    - none
+
+	  ## Examples
+
+	      iex> Main.main()
+	  """
   def main do
     user = %Example2.User{name: "Steve", roles: [:admin, :owner]}
     sean = %{user | name: "Sean"}
