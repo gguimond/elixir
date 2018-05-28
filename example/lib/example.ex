@@ -15,4 +15,8 @@ defmodule Example do
   def hello do
     :world
   end
+
+  def showHello do
+    IO.puts "world"
+  end
 end
