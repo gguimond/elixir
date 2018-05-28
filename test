@@ -208,5 +208,46 @@ defmodule Main do
     IO.puts Anagram.anagrams?("Hello", "ohell")
   end
 end
+
+
+{time, result} = :timer.tc(fn (n) -> (n * n) * n end, [100])
+IO.puts("Time: #{time} μs")
+IO.puts("Result: #{result}")
+
+try do
+   raise "Oh no!"
+ rescue
+   e in RuntimeError -> IO.puts("An error occurred: " <> e.message)
+ after
+ 	IO.puts "finish"
+ end
+
+defmodule MyError do
+  defexception message: "an example error has occurred"
+end
+
+try do
+   raise MyError
+ rescue
+   e in MyError -> IO.puts("An error occurred: " <> e.message)
+ end
+
+ try do
+   for x <- 0..10 do
+    if x == 5, do: throw(x)
+     IO.puts(x)
+   end
+ catch
+   x -> IO.puts "Caught: #{x}"
+ end
+
+
+
+mytoto = fn() -> IO.puts "simple func" end
+
+mytoto.()
+
 Main.main
+
+spawn_link fn -> exit("oh no") end
 
