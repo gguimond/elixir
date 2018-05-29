@@ -249,5 +249,71 @@ mytoto.()
 
 Main.main
 
+defmodule ExConc do
+  def add(a, b) do
+  	IO.puts("yep")
+    IO.puts(a + b)
+  end
+  def listen do
+    receive do
+      {:ok, "hello"} -> IO.puts("World")
+    end
+
+    listen
+  end
+end
+
+spawn(ExConc, :add, [2, 3])
+
+pid = spawn(ExConc, :listen, [])
+
+send pid, {:ok, "hello"}
+
+defmodule ExLink do
+  def explode, do: exit(:kaboom)
+
+  def run do
+    Process.flag(:trap_exit, true)
+    spawn_link(ExLink, :explode, [])
+
+    receive do
+      {:EXIT, from_pid, reason} -> IO.puts("Exit reason: #{reason}")
+    end
+  end
+end
+
+defmodule ExMonitor do
+  def explode, do: exit(:kaboom)
+
+  def run do
+    {pid, ref} = spawn_monitor(ExMonitor, :explode, [])
+
+    receive do
+      {:DOWN, ref, :process, from_pid, reason} -> IO.puts("Exit reason: #{reason}")
+    end
+  end
+end
+
+
+ExLink.run
+ExMonitor.run
+
+{:ok, agent} = Agent.start_link(fn -> [1, 2, 3] end)
+Agent.update(agent, fn (state) -> state ++ [4, 5] end)
+IO.puts Agent.get(agent, &(&1))
+
+Agent.start_link(fn -> [1, 2, 3] end, name: Numbers)
+IO.puts Agent.get(Numbers, &(&1))
+
+defmodule ExTask do
+  def double(x) do
+    :timer.sleep(2000)
+    x * 2
+  end
+end
+
+task = Task.async(ExTask, :double, [2000])
+IO.puts Task.await(task)
+
 spawn_link fn -> exit("oh no") end
 
