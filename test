@@ -142,7 +142,6 @@ IO.puts Regex.split(~r/_/, string)
 IO.puts NaiveDateTime.from_iso8601("2015-01-23 23:50:07") == {:ok, ~N[2015-01-23 23:50:07]}
 
 
-
 list = [1, 2, 3, 4, 5]
 for x <- list, do: IO.puts x*x
 
@@ -180,12 +179,33 @@ defmodule Anagram do
   end
 end
 
+defmodule OurMacro do
+  defmacro unless(expr, do: block) do
+    quote do
+      if !unquote(expr), do: unquote(block)
+    end
+  end
+  defmacro hygienic do
+    quote do: val = -1
+  end
+  defmacro unhygienic do
+    quote do: var!(val) = -1
+  end
+  defmacro double_puts(expr) do
+    quote bind_quoted: [expr: expr] do
+      IO.puts(expr)
+      IO.puts(expr)
+    end
+  end
+end
+
 defmodule Main do
 	@moduledoc """
   	Provides a main function
   	"""
 
 	use HelloMacro, greeting: "Hola"
+	require OurMacro
 	import MySigils
 	@doc """
 	  Main function
@@ -206,6 +226,16 @@ defmodule Main do
     IO.puts helloMac("toto")
     IO.puts ~u/elixir school/
     IO.puts Anagram.anagrams?("Hello", "ohell")
+    OurMacro.unless false, do: IO.puts "Hi hi hi"
+    quoted =
+	  quote do
+	    OurMacro.unless(true, do: "Hi")
+	end
+	quoted |> Macro.expand_once(__ENV__) |> Macro.to_string |> IO.puts
+	val = 42
+	IO.puts OurMacro.hygienic
+	IO.puts OurMacro.unhygienic
+	IO.puts OurMacro.double_puts(:os.system_time)
   end
 end
 
@@ -362,7 +392,7 @@ IO.puts SimpleQueue.dequeue
 IO.puts SimpleQueue.enqueue 4
 IO.puts SimpleQueue.queue
 
-
+IO.puts Macro.to_string(quote(do: foo.bar(1, 2, 3)))
 
 spawn_link fn -> exit("oh no") end
 
