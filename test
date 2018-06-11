@@ -110,6 +110,7 @@ IO.puts "Elixir rocks" |> String.upcase() |> String.split()
 defmodule Example do
   @greeting "Hello"
 
+  @spec greeting(string) :: :null
   def greeting(name) do
     ~s(#{@greeting} #{name}.)
   end
@@ -207,6 +208,25 @@ defmodule Main do
 	use HelloMacro, greeting: "Hola"
 	require OurMacro
 	import MySigils
+  defmodule Examples do
+    defstruct first: nil, last: nil
+
+    @type t(first, last) :: %Examples{first: first, last: last}
+
+    @typedoc """
+      Type that represents Examples struct with :first as integer and :last as integer.
+    """
+    @type t :: %Examples{first: integer, last: integer}
+  end
+  @spec sum_times(integer, Examples.t()) :: integer
+  def sum_times(a, params) do
+    for i <- params.first..params.last do
+      i
+    end
+    |> Enum.map(fn el -> el * a end)
+    |> Enum.sum()
+    |> round
+  end
 	@doc """
 	  Main function
 
@@ -226,6 +246,8 @@ defmodule Main do
     IO.puts helloMac("toto")
     IO.puts ~u/elixir school/
     IO.puts Anagram.anagrams?("Hello", "ohell")
+    IO.puts "sum"
+    IO.puts sum_times(2, %Examples{first: 2, last: 3})
     OurMacro.unless false, do: IO.puts "Hi hi hi"
     quoted =
 	  quote do
@@ -393,6 +415,10 @@ IO.puts SimpleQueue.enqueue 4
 IO.puts SimpleQueue.queue
 
 IO.puts Macro.to_string(quote(do: foo.bar(1, 2, 3)))
+
+
+
+
 
 spawn_link fn -> exit("oh no") end
 
