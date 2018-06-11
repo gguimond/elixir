@@ -1,0 +1,24 @@
+# Utilities
+
+**TODO: Add description**
+
+## Installation
+
+If [available in Hex](https://hex.pm/docs/publish), the package can be installed as:
+
+  1. Add `utilities` to your list of dependencies in `mix.exs`:
+
+    ```elixir
+    def deps do
+      [{:utilities, "~> 0.1.0"}]
+    end
+    ```
+
+  2. Ensure `utilities` is started before your application:
+
+    ```elixir
+    def application do
+      [applications: [:utilities]]
+    end
+    ```
+
