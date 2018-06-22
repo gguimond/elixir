@@ -502,5 +502,16 @@ end
 IO.puts "-----------"
 IO.puts Kernel.to_string({3.14, "apple", :pie})
 
+IO.puts EEx.eval_string("Hi, <%= name %>", [name: "Guimog"])
+
+defmodule EEx_ex do
+  require EEx
+  EEx.function_from_string(:def, :greeting, "Hi, <%= name %>", [:name])
+end
+
+IO.puts EEx_ex.greeting("Sean")
+
+IO.puts EEx.eval_string("Hi, <%= @name %>", [assigns: [name: "Kante"]])
+
 spawn_link fn -> exit("oh no") end
 
