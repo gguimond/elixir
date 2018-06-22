@@ -569,12 +569,14 @@ case Mnesia.create_table(Person, [attributes: [:id, :name, :job, :age]]) do
  end
 end
 
+create_table.()
+
 data_to_write = fn ->
   Mnesia.write({Person, 4, "Marge Simpson", "home maker"})
   Mnesia.write({Person, 5, "Hans Moleman", "unknown"})
 end
 
-Mnesia.transaction(data_to_write)
+IO.puts Mnesia.transaction(data_to_write)
 
 data_to_read = fn ->
   Mnesia.read({Person, 4})
@@ -582,7 +584,7 @@ end
 
 IO.puts Mnesia.transaction(data_to_read)
 
-Mnesia.add_table_index(Person, :job)
+IO.puts Mnesia.add_table_index(Person, :job)
 
 index_to_read = fn -> 
   Mnesia.index_read(Person, "home maker", :job)
@@ -592,14 +594,13 @@ IO.puts Mnesia.transaction(index_to_read)
 
 query = fn ->
   IO.puts "query"
-  create_table
   IO.puts "write"
   IO.puts Mnesia.write({Person, 6, "guimog", "dev"})
   IO.puts "select"
   IO.puts Mnesia.select(Person, [{{Person, :"$1", :"$2", :"$3"}, [{:>, :"$1", 3}], [:"$$"]}])
 end
 
-IO.puts Mnesia.transaction(query)
+Mnesia.transaction(query)
 
 spawn_link fn -> exit("oh no") end
 
