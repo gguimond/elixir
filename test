@@ -513,5 +513,31 @@ IO.puts EEx_ex.greeting("Sean")
 
 IO.puts EEx.eval_string("Hi, <%= @name %>", [assigns: [name: "Kante"]])
 
+table = :ets.new(:user_lookup, [:set, :protected, :named_table])
+
+IO.puts :ets.insert(:user_lookup, {"doomspork", "Sean", ["Elixir", "Ruby", "Java"]})
+
+IO.puts :ets.insert_new(:user_lookup, {"doomspork", "Sean", ["Elixir", "Ruby", "Java"]})
+
+:ets.lookup(:user_lookup, "doomspork")
+
+:ets.match(:user_lookup, {:"$1", "Sean", :"_"})
+
+IO.puts Enum.at(:ets.match_object(:user_lookup, {:"$1", :"_", :"$3"}), 0)
+
+:ets.select(:user_lookup, [{{:"$1", :"_", :"$3"}, [], [:"$_"]}])
+
+#fun = :ets.fun2ms(fn {username, _, langs} when length(langs) > 2 -> username end)
+
+#IO.puts Enum.at(:ets.select(:user_lookup, fun), 0)
+
+:ets.delete(:user_lookup, "doomspork")
+
+:ets.delete(:user_lookup)
+
+{:ok, table} = :dets.open_file(:disk_storage, [type: :set])
+
+:dets.insert_new(table, {"doomspork", "Sean", ["Elixir", "Ruby", "Java"]})
+
 spawn_link fn -> exit("oh no") end
 
