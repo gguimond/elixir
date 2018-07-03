@@ -1,0 +1,2 @@
+defmodule JwtApp do
+end
