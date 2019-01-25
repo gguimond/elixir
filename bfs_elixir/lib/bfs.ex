@@ -12,12 +12,18 @@ defmodule Bfs do
 
         ## Example
             iex> graph = %{"0" => MapSet.new(["2"]),"1" => MapSet.new(["1"]),"2" => MapSet.new(["0", "3", "4"]),"3" => MapSet.new(["2", "4"]),"4" => MapSet.new(["2", "3", "6"]),"5" => MapSet.new(["6"]),"6" => MapSet.new(["4", "5"])}
-            iex> Bfs.shortest_path(graph, "0", "0")
-            true
+            iex> Bfs.shortest_path!(graph, "0", "0")
+            {0, ["0"]}
+            iex> Bfs.shortest_path!(graph, "0", "6")
+            {3, ["0", "2", "4", "6"]}
+            iex> Bfs.shortest_path!(graph, "3", "6")
+            {2, ["3", "4", "6"]}
+            iex> Bfs.shortest_path!(graph, "6", "3")
+            {2, ["6", "4", "3"]}
     """
 
-    def shortest_path(graph, from, to) when from != to, do: shortest_path(graph, from, [from], MapSet.new , to, 0, %{})
-    def shortest_path(_, from, to) when from == to, do: {0, [from]}
+    def shortest_path!(graph, from, to) when from != to, do: shortest_path(graph, from, [from], MapSet.new , to, 0, %{})
+    def shortest_path!(_, from, to) when from == to, do: {0, [from]}
 
     defp shortest_path(_, _, [], _, _, _, _) do
         throw "NOT FOUND"
@@ -58,6 +64,7 @@ defmodule Bfs do
     end
 end
 
+"""
 graph = %{
     "0" => MapSet.new(["2"]),
     "1" => MapSet.new(["1"]),
@@ -72,22 +79,20 @@ IO.inspect "Graph"
 IO.inspect graph
 
 IO.inspect "0 -> 0"
-IO.inspect Bfs.shortest_path(graph, "0", "0")
+IO.inspect Bfs.shortest_path!(graph, "0", "0")
 
 IO.inspect "0 -> 6"
-IO.inspect Bfs.shortest_path(graph, "0", "6")
+IO.inspect Bfs.shortest_path!(graph, "0", "6")
 
 IO.inspect "3 -> 6"
-IO.inspect Bfs.shortest_path(graph, "3", "6")
+IO.inspect Bfs.shortest_path!(graph, "3", "6")
 
 IO.inspect "6 -> 3"
-IO.inspect Bfs.shortest_path(graph, "6", "3")
+IO.inspect Bfs.shortest_path!(graph, "6", "3")
 
 IO.inspect "7 -> 5"
-IO.inspect Bfs.shortest_path(graph, "7", "5")
+IO.inspect Bfs.shortest_path!(graph, "7", "5")
 
 IO.inspect "5 -> 7"
-IO.inspect Bfs.shortest_path(graph, "5", "7")
-
-IO.inspect "7 -> 5"
-IO.inspect Bfs.shortest_path(graph, "7", "5")
+IO.inspect Bfs.shortest_path!(graph, "5", "7")
+"""

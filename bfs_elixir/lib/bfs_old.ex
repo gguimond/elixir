@@ -96,7 +96,7 @@ defmodule BfsOld do
             end 
     end
 end
-
+"""
 graph = %{
     "0" => MapSet.new(["2"]),
     "1" => MapSet.new(["1"]),
@@ -113,3 +113,4 @@ IO.inspect BfsOld.shortest_path(graph, "0", ["0"], MapSet.new , "6", 0, %{})
 IO.inspect BfsOld.shortest_path(graph, "3", ["3"], MapSet.new , "6", 0, %{})
 IO.inspect BfsOld.shortest_path(graph, "6", ["6"], MapSet.new , "3", 0, %{})
 IO.inspect BfsOld.shortest_path(graph, "5", ["5"], MapSet.new , "7", 0, %{})
+"""
