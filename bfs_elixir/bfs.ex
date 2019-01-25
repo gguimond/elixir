@@ -1,70 +1,31 @@
-#Fifo
-
-newFifo = fn -> {[], []} end
-
-pushFifo = fn({l,r},x) -> {l,[x|r]} end
-
-popFifo = fn 
-        {[f|l],r} -> {f, {l,r}} 
-        {[], r} -> 
-            case :lists.reverse(r) do 
-                []->throw "BLARGH-EMPTY"
-                [f|l]->{f, {l,[]}} 
-            end 
-        end
-
-fifo = newFifo.()
-f1 = fifo    |> pushFifo.(1) 
-        |> pushFifo.(2)
-        |> pushFifo.(3)
-f2 = f1 |> popFifo.()
-IO.inspect f2
-IO.inspect f2 |> elem(1) |> popFifo.()
-
-
 #BFS
 defmodule Bfs do
     defp neighbors(graph, v) do
-        Map.get(graph, v, MapSet.new)
+        {Map.get(graph, v, MapSet.new), v}
     end
 
-    def bfs(_, [], seen) do
-        seen
-    end
+    defp find_path(_, from, to, path) when from == to, do: path
+    defp find_path(prev, from, to, path) when from != to, do: find_path(prev, from, Map.get(prev, to), [Map.get(prev, to) | path])
 
-    def bfs(graph, frontier, seen) do
-        unseen_neighbors = for v <- frontier do
-          neighbors(graph, v)
-        end
-        |> Enum.reduce(MapSet.new, &MapSet.union/2)
-        |> MapSet.difference(seen)
-        |> MapSet.to_list
+    @doc """
+        Given graph and 2 points, return the distance and shortest path.
 
-        bfs(
-          graph,
-          unseen_neighbors,
-          MapSet.union(seen, MapSet.new(unseen_neighbors))
-        )
-    end
+        ## Example
+            iex> graph = %{"0" => MapSet.new(["2"]),"1" => MapSet.new(["1"]),"2" => MapSet.new(["0", "3", "4"]),"3" => MapSet.new(["2", "4"]),"4" => MapSet.new(["2", "3", "6"]),"5" => MapSet.new(["6"]),"6" => MapSet.new(["4", "5"])}
+            iex> Bfs.shortest_path(graph, "0", "0")
+            true
+    """
 
-    defp neighbors_and_prev(graph, v) do
-        { Map.get(graph, v, MapSet.new), v }
-    end
+    def shortest_path(graph, from, to) when from != to, do: shortest_path(graph, from, [from], MapSet.new , to, 0, %{})
+    def shortest_path(_, from, to) when from == to, do: {0, [from]}
 
-    defp find_path(prev, from, to, path) do
-        cond do
-            from == to -> path
-            true -> find_path(prev, from, Map.get(prev, to), [ Map.get(prev, to) | path ])
-        end
-    end
-
-    def shortest_path(_, _, [], _, _, _, _) do
+    defp shortest_path(_, _, [], _, _, _, _) do
         throw "NOT FOUND"
     end
 
-    def shortest_path(graph, from, frontier, seen, to, dist, prev) do
+    defp shortest_path(graph, from, frontier, seen, to, dist, prev) do
         result = for v <- frontier do
-          neighbors_and_prev(graph, v)
+            neighbors(graph, v)
         end
         unseen_neighbors = result
         |> Enum.map(fn x -> x |> elem(0) end)
@@ -73,27 +34,27 @@ defmodule Bfs do
 
         newdist = dist + 1
         newprev = result
-            |> Enum.reduce(prev, fn x, acc -> Map.merge( 
-                    Enum.reduce(x |> elem(0), %{}, fn (y, acc) -> 
-                        cond do
-                            MapSet.member?(unseen_neighbors, y) -> Map.put(acc, y, x |> elem(1))
-                            true -> acc
-                        end
-                    end
-                ), acc) end)
+        |> Enum.reduce(prev, fn x, acc -> Map.merge( 
+            Enum.reduce(x |> elem(0), %{}, fn (y, acc) -> 
+                cond do
+                    MapSet.member?(unseen_neighbors, y) -> Map.put(acc, y, x |> elem(1))
+                    true -> acc
+                end
+            end
+        ), acc) end)
         
         case MapSet.member?(unseen_neighbors, to) do 
-                true-> { newdist, find_path(newprev, from, to, [to]) }
-                false-> shortest_path(
-                          graph,
-                          from,
-                          MapSet.to_list(unseen_neighbors),
-                          MapSet.union(seen, MapSet.new(unseen_neighbors)),
-                          to,
-                          newdist,
-                          newprev
-                        )
-            end 
+            true-> {newdist, find_path(newprev, from, to, [to])}
+            false-> shortest_path(
+                        graph,
+                        from,
+                        MapSet.to_list(unseen_neighbors),
+                        MapSet.union(seen, MapSet.new(unseen_neighbors)),
+                        to,
+                        newdist,
+                        newprev
+                    )
+        end 
     end
 end
 
@@ -106,10 +67,27 @@ graph = %{
     "5" => MapSet.new(["6"]),
     "6" => MapSet.new(["4", "5"])
 }
-IO.inspect graph
-IO.inspect Bfs.bfs(graph,["0"],MapSet.new)
 
-IO.inspect Bfs.shortest_path(graph, "0", ["0"], MapSet.new , "6", 0, %{})
-IO.inspect Bfs.shortest_path(graph, "3", ["3"], MapSet.new , "6", 0, %{})
-IO.inspect Bfs.shortest_path(graph, "6", ["6"], MapSet.new , "3", 0, %{})
-IO.inspect Bfs.shortest_path(graph, "5", ["5"], MapSet.new , "7", 0, %{})
+IO.inspect "Graph"
+IO.inspect graph
+
+IO.inspect "0 -> 0"
+IO.inspect Bfs.shortest_path(graph, "0", "0")
+
+IO.inspect "0 -> 6"
+IO.inspect Bfs.shortest_path(graph, "0", "6")
+
+IO.inspect "3 -> 6"
+IO.inspect Bfs.shortest_path(graph, "3", "6")
+
+IO.inspect "6 -> 3"
+IO.inspect Bfs.shortest_path(graph, "6", "3")
+
+IO.inspect "7 -> 5"
+IO.inspect Bfs.shortest_path(graph, "7", "5")
+
+IO.inspect "5 -> 7"
+IO.inspect Bfs.shortest_path(graph, "5", "7")
+
+IO.inspect "7 -> 5"
+IO.inspect Bfs.shortest_path(graph, "7", "5")
