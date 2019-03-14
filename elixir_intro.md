@@ -1,4 +1,4 @@
-[run Elixir online](https://www.jdoodle.com/execute-elixir-online)
+[run Elixir online](https://www.jdoodle.com/execute-elixir-online)  
 [link to pres](https://hackmd.io/sr3Z4z3eRPapB96IXkw1ag)
 
 # Introduction to Elixir
@@ -23,7 +23,7 @@
 ### types
 * Integer, Float, Ranges, Atoms, Regex
 * Tuples, Linked List, Binaries, Maps 
-```
+```elixir
 name = "Sean"
 string = " Hello " <> name
 list = ([1, 2] ++ [3, 4]) -- [1,3]
@@ -34,7 +34,7 @@ map2 = %{map | foo: "baz"}
 IO.puts :stderr, map2.foo
 ```
 * Enum
-```
+```elixir
 IO.puts Enum.all?(["foo", "bar", "hello"], fn(s) -> String.length(s) == 3 end)
 IO.puts Enum.chunk_by(["one", "two", "three", "four", "five"], fn(x) -> String.length(x) end)
 IO.puts Enum.map([0, 1, 2, 3], fn(x) -> Integer.to_string(x - 1) end)
@@ -42,7 +42,7 @@ IO.puts Enum.filter([1, 2, 3, 4], fn(x) -> rem(x, 2) == 0 end)
 IO.puts Enum.reduce(["a","b","c"], "1", fn(x,acc)-> x <> acc end)
 ```
 * Struct
-```
+```elixir
 defmodule User do
   defstruct name: "John", age: 27
 end
@@ -58,7 +58,7 @@ end
 Main.main
 ```
 ### Anonymous function, named function
-```
+```elixir
 defmodule Greeter do
   def hello(name), do: phrase() <> name
   defp phrase do
@@ -73,7 +73,7 @@ IO.puts Integer.to_string sum2.(2,3)
 
 ```
 ### Pattern Matching (assignment vs binding)
-```
+```elixir
 list = [1, 2, 3, "test"]
 [1, 2, 3 | tail] = list
 IO.puts tail
@@ -86,7 +86,7 @@ IO.puts greet.("Hello", "Sean")
 IO.puts greet.("Mornin'", "Sean")
 ```
 ### Guards
-```
+```elixir
 defmodule Guards do
   def empty_map?(map) when map_size(map) == 0, do: true
   def empty_map?(map) when is_map(map), do: false
@@ -103,7 +103,7 @@ defmodule Main do
 end
 ```
 ### Control structures
-```
+```elixir
 defmodule Main do
   def main do
     if String.valid?("Hello") do
@@ -132,13 +132,13 @@ end
 Main.main
 ```
 ### Pipe
-```
+```elixir
 IO.inspect "Elixir rocks" 
   |> String.upcase
   |> String.split
 ```
 ### List comprehensions
-```
+```elixir
 list = [1, 2, 3, 4, 5]
 for x <- list, do: IO.puts x*x
 
@@ -154,7 +154,7 @@ for x <- 1..10, is_even(x), do: IO.puts x
 for {k, v} <- [one: 1, two: 2, three: 3], into: %{}, do: {k, v}
 ```
 ### Macros (Ex if), Meta programming
-```
+```elixir
 defmodule OurMacro do
   defmacro unless(expr, do: block) do
     quote do
@@ -185,7 +185,7 @@ end
 Main.main
 ```
 ### Errors
-```
+```elixir
 case my_function() do
   {:ok, any} ->
     Logger.info(“Success”)
@@ -197,7 +197,7 @@ case my_function() do
 end
 ```
 ### Exceptions
-```
+```elixir
 defmodule MyError do
   defexception message: "an example error has occurred"
 end
@@ -228,7 +228,7 @@ end
 Main.main
 ```
 ### Custom types & Behaviours
-```
+```elixir
 defmodule Main do
   @type my_type :: {number, String.t}
 
@@ -252,7 +252,7 @@ end
 Mymodule_implem.mandatory "foo"
 ```
 ### Documentation/DocTests
-```
+```elixir
 defmodule Main do
   @moduledoc """
     Provides a main function
@@ -282,7 +282,7 @@ defmodule MainTest do
 end
 ```
 ### Test/ ExUnit
-```
+```elixir
 defmodule MainTest do
   use ExUnit.Case
 
@@ -299,7 +299,7 @@ IEX, IO.inspect, IEx.pry, IEx.break, :debugger
 ### Mix
 > Mix is a build tool that ships with Elixir that provides tasks for creating, compiling, testing your application, managing its dependencies and much more
 * Creation
-```
+```console
 mix new example --module Example
 
 * creating README.md
@@ -315,7 +315,7 @@ mix new example --module Example
 * creating test/example_test.exs
 ```
 * Mix.exs
-```
+```elixir
 defmodule Example.Mixfile do
   use Mix.Project
 
@@ -350,35 +350,35 @@ defmodule Example.Mixfile do
 end
 ```
 * Dependencies / Hex package manager
-```
+```console
 mix deps.get
 ```
 * Compilation
-```
+```console
 mix compile
 ```
 * Run
-```
+```console
 mix run --no-halt
 ```
 * Test
-```
+```console
 mix test
 ```
 * Code formatting
-```
+```console
 mix format
 ```
 ### Distillery
 > a tool for packaging Elixir applications for deployment using OTP releases
 > produces an artifact, a tarball, which contains your application and everything needed to run it
 * Mix tasks
-```
+```console
 mix release.init
 mix release
 ```
 * Release tasks / entry point bin/myapp
-```
+```console
 foreground 
 console
 start
@@ -391,7 +391,7 @@ stop
 ### Plug
 * A specification for composable modules between web applications
 * Connection adapters for different web servers in the Erlang VM
-```
+```elixir
 defmodule Example.HelloWorldPlug do
   import Plug.Conn
 
@@ -404,7 +404,7 @@ defmodule Example.HelloWorldPlug do
   end
 end 
 ```
-```
+```elixir
 defmodule Example.Router do
   use Plug.Router
   use Plug.ErrorHandler
@@ -428,22 +428,22 @@ defmodule Example.Router do
 end 
 ```
 ### Templates EEX
-```
+```elixir
 IO.puts EEx.eval_string("Hi, <%= @name %>", [assigns: [name: "Kante"]])
 ```
 ### Phoenix
 > web development framework written in Elixir which implements the server-side Model View Controller (MVC) pattern (Rails, Django)
 ## DB
-ETS
-Mnesia
-Ecto
+* ETS
+* Mnesia
+* Ecto
 
 ## Perf
 * low latency, concurrency, footprint
 * computation
 * Concurrency : “light threads” or “green threads”, scheduler, preemptive (vs cooperative), messages queues (spawn and send/receive functions)
 >"Elixir processes have their own isolated heap spaces which are individually reclaimed when the process finishes, while goroutines utilize shared memory and an application-wide garbage collector to reclaim resources"
-```
+```elixir
 defmodule ExConc do
   def listen do
     receive do
@@ -460,7 +460,7 @@ send pid2, {:ok, "hello"}
 send pid3, {:ok, "hello"}
 ```
 * Tasks
-```
+```elixir
 defmodule Example do
   def double(x) do
     :timer.sleep(2000)
@@ -472,7 +472,7 @@ IO.puts Task.await(task)
 ```
 * GenServer (& Agent)
 > A behaviour module for implementing the server of a client-server relation
-```
+```elixir
 defmodule SimpleQueue do
   use GenServer
 
@@ -520,7 +520,7 @@ IO.inspect SimpleQueue.dequeue
 ```
 * Supervisor
 > A supervisor is a process whose responsibility is to start child processes and keep them alive by restarting them if necessary
-```
+```elixir
 defmodule SimpleQueue.Supervisor do
   use Supervisor
 
