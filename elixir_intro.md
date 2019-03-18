@@ -251,6 +251,33 @@ defmodule Mymodule_implem do
 end
 Mymodule_implem.mandatory "foo"
 ```
+### Protocols (polymorphism)
+```elixir
+defprotocol AsAtom do
+  def to_atom(data)
+end
+
+defimpl AsAtom, for: Atom do
+  def to_atom(atom), do: atom
+end
+
+defimpl AsAtom, for: BitString do
+  defdelegate to_atom(string), to: String
+end
+
+defimpl AsAtom, for: List do
+  defdelegate to_atom(list), to: List
+end
+
+defimpl AsAtom, for: Map do
+  def to_atom(map), do: List.first(Map.keys(map))
+end
+
+IO.inspect AsAtom.to_atom(:an_atom)
+IO.inspect AsAtom.to_atom("string")
+IO.inspect AsAtom.to_atom([1, 2])
+IO.inspect AsAtom.to_atom(%{foo: "bar"})
+```
 ### Documentation/DocTests
 ```elixir
 defmodule Main do
